@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using StockSense.Data;
 
@@ -8,6 +9,16 @@ builder.Services.AddControllersWithViews();
 
 // Configure DbContext with resilience
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AccountConnection")));
+// Configure cookie authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, config =>
+    {
+        config.LoginPath = "/Auth/Login";
+        config.LogoutPath = "/Auth/Logout";
+        config.AccessDeniedPath = "/Auth/AccessDenied";
+        config.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+        config.SlidingExpiration = true;
+    });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
