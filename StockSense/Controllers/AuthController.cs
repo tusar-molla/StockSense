@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockSense.Interface;
 using StockSense.Models.ViewModels.Auth;
@@ -60,7 +61,8 @@ namespace StockSense.Controllers
             {
                 new(ClaimTypes.Name, user.FullName!),
                 new(ClaimTypes.Email, user.Email!),
-                new(ClaimTypes.NameIdentifier, user.Id.ToString())                
+                new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new(ClaimTypes.Role, user.RoleId!.ToString())
             };
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
@@ -79,6 +81,48 @@ namespace StockSense.Controllers
                 TempData["ErrorMessage"] = "Login Unsuccessful! " + ex.Message;
                 return View(login);
             }
+        }
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Auth");
+        }
+
+
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            try
+            {
+                if (model.ConfirmPassword != model.NewPassword)
+                {
+                    throw new Exception("New password and confirm password do not match");
+                }
+                var result = await _authService.ResetPasswordAsync(model.CurrentPassword!, model.NewPassword!);
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Password successfully reset!";
+                    return RedirectToAction("Dashboard", "Home");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return View(model);
         }
     }
 }

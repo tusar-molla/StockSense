@@ -9,10 +9,12 @@ namespace StockSense.Services
     public class AuthService : IAuthService
     {
         private readonly AppDbContext _context;
+        private readonly BaseService _baseService;
 
-        public AuthService(AppDbContext context)
+        public AuthService(AppDbContext context , BaseService baseService)
         {
             _context = context;
+            _baseService = baseService;
         }
 
         public async Task<User> RegisterAsync(RegisterViewModel registerViewModel)
@@ -50,6 +52,24 @@ namespace StockSense.Services
                 throw new Exception("Invalid email or password");
             }
             return user;
+        }
+        public async Task<bool> ResetPasswordAsync(string currentPassword, string newPassword)
+        {
+            var userId = _baseService.GetUserId();
+            if (userId == 0)
+            {
+                throw new Exception("User not found.");
+            }
+            var user = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            if (user == null || user.Password != currentPassword)
+            {
+                throw new Exception("Current password is incorrect");
+            }
+
+            user.Password = newPassword;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
