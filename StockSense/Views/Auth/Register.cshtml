@@ -1,0 +1,62 @@
+﻿@model StockSense.Models.ViewModels.Auth.RegisterViewModel;
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_LayoutWithoutNav.cshtml";
+}
+<div class="main-wrapper">
+    <div class="account-content">
+        <div class="login-wrapper">
+            <div class="login-content">
+                <div class="login-userset">
+                    <div class="login-logo">
+                        <img src="~/assets/img/logo.png" alt="img">
+                    </div>
+                    <div class="login-userheading">
+                        <h3>Create an Account</h3>
+                        <h4>Continue where you left off</h4>
+                    </div>
+                    <form method="post">
+                        <div class="form-login">
+                            <label for="FullName" class="form-label">Full Name</label>
+                            <div class="form-addons">
+                                <input type="text" class="form-control" id="FullName" name="FullName" required />
+                                <img src="~/assets/img/icons/users1.svg" alt="img">
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <label asp-for="ContactNumber" class="form-label">Mobile Phone Number</label>
+                            <div class="form-addons">
+                                <input asp-for="ContactNumber" class="form-control" />
+                                <img src="~/assets/img/icons/mail.svg" alt="img">
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <label for="Email" class="form-label">Email</label>
+                            <div class="form-addons">
+                                <input type="email" class="form-control" id="Email" name="Email" required />
+                                <img src="~/assets/img/icons/mail.svg" alt="img">
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <label for="Password" class="form-label">Password</label>
+                            <div class="pass-group">
+                                <input type="password" class="form-control" id="Password" name="Password" required />
+                                <span class="fas toggle-password fa-eye-slash"></span>
+                            </div>
+                        </div>
+                        <div class="form-login">
+                            <button type="submit" class="btn btn-login">REGISTER</button>
+                        </div>
+                        <div class="signinform text-center">
+                            <h4>Already a user? <a asp-controller="Auth" asp-action="Login" class="hover-a">Sign In</a></h4>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="login-img">
+                <img src="~/assets/img/login.jpg" alt="img">
+            </div>
+        </div>
+    </div>
+</div>
