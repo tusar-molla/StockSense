@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using StockSense.Interface;
 using StockSense.Models;
 
 namespace StockSense.Controllers
 {
+    [Authorize]
     public class CompanyController : Controller
     {
         private readonly ILogger<CompanyController> _logger;
@@ -18,12 +20,15 @@ namespace StockSense.Controllers
         [HttpGet]
         public async Task<IActionResult> Company()
         {
-            var company = await _companyService.GetAllAsync();
+            var companyList = await _companyService.GetAllAsync();
+            var company = companyList?.FirstOrDefault();
+
             if (company == null)
             {
                 return View(new Company());
             }
             return View(company);
+
         }
 
         [HttpPost]

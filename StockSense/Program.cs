@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 
 // Register services
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<BaseService>();
 builder.Services.AddHttpContextAccessor();
 // Configure DbContext with resilience
